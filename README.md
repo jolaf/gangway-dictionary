@@ -5,7 +5,7 @@ The current version of generated leaflets is available right away in [DOCX](docx
 
 **NOTE!** The basic language for this dictionary is **Russian**, though the software itself is not language-dependent.
 
-## Dependencies
+## System requirements
 
 Generation of [DOCX leaflets](docx) from the [DOCX layout template](GangwayDict-Template.docx?raw=true) and dictionary content stored in the [Google Spreadsheet](https://docs.google.com/spreadsheets/d/1kbMuGJaRR4gYTr9yaobskiENStj48m8wqhKRjlIQ0Tc) can be performed on any platform (Linux, MacOS, Windows).
 
