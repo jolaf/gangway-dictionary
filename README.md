@@ -7,7 +7,7 @@ The current version of generated leaflets is available right away in [DOCX](docx
 
 ## Dependencies
 
-Generation of [DOCX leaflets](docx) from the [DOCX layout template](GangwayDict-Template.docx) and dictionary content stored in the [Google Spreadsheet](https://docs.google.com/spreadsheets/d/1kbMuGJaRR4gYTr9yaobskiENStj48m8wqhKRjlIQ0Tc) can be performed on any platform (Linux, MacOS, Windows).
+Generation of [DOCX leaflets](docx) from the [DOCX layout template](GangwayDict-Template.docx?raw=true) and dictionary content stored in the [Google Spreadsheet](https://docs.google.com/spreadsheets/d/1kbMuGJaRR4gYTr9yaobskiENStj48m8wqhKRjlIQ0Tc) can be performed on any platform (Linux, MacOS, Windows).
 
 To do it you will need:
 
@@ -19,19 +19,19 @@ To do it you will need:
 If you want to
 
 * View and print generated [DOCX leaflets](docx);
-* Adjust the [DOCX layout template](GangwayDict-Template.docx);
+* Adjust the [DOCX layout template](GangwayDict-Template.docx?raw=true);
 * Generate [PDF leaflets](pdf),
 
 then you will need:
 
-* [Microsoft Windows](https://www.microsoft.com/windows) and [Microsoft Word](https://products.office.com/word) to edit the [DOCX layout template](GangwayDict-Template.docx), to print generated [DOCX leaflets](docx) and to generate [PDF leaflets](pdf).
+* [Microsoft Windows](https://www.microsoft.com/windows) and [Microsoft Word](https://products.office.com/word) to edit the [DOCX layout template](GangwayDict-Template.docx?raw=true), to print generated [DOCX leaflets](docx) and to generate [PDF leaflets](pdf).
 * `pip3 install comtypes`
 
 ## Usage
 
 * Create authentication token for Google API, as instructed [here](https://pygsheets.readthedocs.io/en/stable/authorization.html).
 * Adjust dictionary content in the [Google Spreadsheet](https://docs.google.com/spreadsheets/d/1kbMuGJaRR4gYTr9yaobskiENStj48m8wqhKRjlIQ0Tc), if needed.
-* Adjust layout in the [DOCX layout template](GangwayDict-Template.docx), if needed.
+* Adjust layout in the [DOCX layout template](GangwayDict-Template.docx?raw=true), if needed.
 * Run `python3 GangwayDict.py` from console or terminal of your operating system.
 * At first run, authorize in Google API by browsing to the URL provided on screen.
 * Check the generated [DOCX](docx) and [PDF](pdf) leaflets, one per language per format.
