@@ -1,24 +1,38 @@
 #!/usr/bin/env python3
 
-from typing import Iterator, List, Optional, Sequence, Tuple
+from os.path import abspath
+from traceback import format_exc
+from typing import Any, List, Optional, Sequence, Tuple
 
 try:
     from docxtpl import DocxTemplate # type: ignore
 except ImportError as ex:
-    raise ImportError(f"{type(ex).__name__}: {ex}\n\nPlease install docxtpl v0.6.3 or later: https://pypi.org/project/docxtpl\n")
+    raise ImportError(f"{type(ex).__name__}: {ex}\n\nPlease install docxtpl v0.6.3 or later: https://pypi.org/project/docxtpl/\n")
 
 try:
     from pygsheets import authorize # type: ignore
     from pygsheets.worksheet import Worksheet # type: ignore
 except ImportError as ex:
-    raise ImportError(f"{type(ex).__name__}: {ex}\n\nPlease install pygsheets v2.0.1 or later: https://pypi.org/project/pygsheets\n")
+    raise ImportError(f"{type(ex).__name__}: {ex}\n\nPlease install pygsheets v2.0.1 or later: https://pypi.org/project/pygsheets/\n")
+
+try:
+    from comtypes import client as comClient, COMError # type: ignore
+    def comErrorStr(e: COMError) -> str:
+        details = ' '.join(str(d).replace('\r', '') for d in e.details if d)
+        return f"{type(e).__name__}:{f' {e.text}' if e.text else ''} {details} {e.hresult}"
+except ImportError as ex:
+    comClient = None
+    print(f"{type(ex).__name__}: {ex}\nWARNING: PDF generation will not be available.\nPlease run on Windows and install comtypes v1.1.7 or later: https://pypi.org/project/comtypes/\n")
 
 AUTH_TOKEN: str = 'client_id.json'
 SCOPES: Sequence[str] = ('https://www.googleapis.com/auth/spreadSheets.readonly',)
 SPREADSHEET_ID: str = '1kbMuGJaRR4gYTr9yaobskiENStj48m8wqhKRjlIQ0Tc'
 ORIGINAL_TITLE: str = 'Русский'
 LOCAL_PATTERN: str = '(местному)'
-DOC_FILE_NAME: str = 'GangwayDict-%s.docx'
+FILE_NAME: str = 'GangwayDict-%s'
+TEMPLATE_FILE_NAME: str = FILE_NAME % 'Template.docx'
+DOC_FILE_NAME: str = f'docx/{FILE_NAME}.docx'
+PDF_FILE_NAME: str = f'pdf/{FILE_NAME}.pdf'
 
 Table = Sequence[Sequence[str]]
 
@@ -47,15 +61,30 @@ class Language:
         self.contact = data[1][validateRow]
         assert self.contact
         print(self.isoCode, self.name, self.translator, self.contact)
+        self.docFileName = abspath(DOC_FILE_NAME % self.isoCode)
+        self.pdfFileName = abspath(PDF_FILE_NAME % self.isoCode)
         self.data: Sequence[Tuple[str, Sequence[Tuple[str, str, str]]]] = tuple((block.title, tuple(zip(
                     (d.replace(LOCAL_PATTERN, self.byName) for d in block.data),
                     data[0][block.startRow : block.endRow + 1], data[1][block.startRow : block.endRow + 1]
                     ))) for block in originals)
 
-    def render(self) -> None:
-        doc = DocxTemplate(DOC_FILE_NAME % 'Template')
+    def renderDocx(self) -> None:
+        doc = DocxTemplate(TEMPLATE_FILE_NAME)
         doc.render(self.__dict__)
-        doc.save(DOC_FILE_NAME % self.isoCode)
+        doc.save(self.docFileName)
+
+    def renderPDF(self, msWord: Any) -> None:
+        assert comClient
+        try:
+            wordDoc = msWord.Documents.Open(self.docFileName)
+            try:
+                wordDoc.SaveAs(self.pdfFileName, FileFormat = 17)
+            finally:
+                wordDoc.Close()
+        except COMError as e:
+            print(comErrorStr(e))
+        except Exception as e:
+            print(f"ERROR {type(e).__name__}: {e}\n{format_exc()}")
 
 class GangwayDict:
     def __init__(self, worksheet: Worksheet) -> None:
@@ -105,9 +134,22 @@ class GangwayDict:
         self.languages: Sequence[Language] = tuple(languages)
 
     def render(self) -> None:
-        print("Generating output files...")
+        print("Generating DOCX leaflets...")
         for language in self.languages:
-            language.render()
+            language.renderDocx()
+        if comClient:
+            print("Generating PDF leaflets...")
+            try:
+                try:
+                    msWord = comClient.CreateObject('Word.Application')
+                    for language in self.languages:
+                        language.renderPDF(msWord)
+                finally:
+                    msWord.Quit()
+            except COMError as e:
+                print(comErrorStr(e))
+            except Exception as e:
+                print(f"ERROR {type(e).__name__}: {e}\n{format_exc()}")
 
     @staticmethod
     def excelColumn(col: int) -> str:
