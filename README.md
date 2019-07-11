@@ -24,7 +24,7 @@ If you want to
 
 then you will need:
 
-* [Microsoft Windows](https://www.microsoft.com/windows) and [Microsoft Word](https://products.office.com/word) to edit the [DOCX layout template](GangwayDict-Template.docx?raw=true), to print generated [DOCX leaflets](docx) and to generate [PDF leaflets](pdf).
+* [Microsoft Windows](https://www.microsoft.com/windows) and [Microsoft Word](https://products.office.com/word).
 * `pip3 install comtypes`
 
 ## Usage
