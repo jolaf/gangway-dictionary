@@ -53,9 +53,9 @@ class Language:
         self.isoCode = data[0][headerRow]
         assert len(self.isoCode) == 2
         assert self.isoCode.isupper()
-        self.name = data[1][headerRow]
+        self.name = data[1][headerRow].lower()
         assert len(self.name) >= 5
-        self.byName = f"{self.name[0].lower()}{self.name[1:-1]}"
+        self.byName = self.name[:-1]
         self.translator = data[0][validateRow]
         assert self.translator
         self.contact = data[1][validateRow]
