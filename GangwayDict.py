@@ -165,10 +165,6 @@ class GangwayDict:
     def excelRow(row: int) -> str:
         return f'{row + 1}'
 
-    @classmethod
-    def excelAddr(cls, row: int, col: int) -> str:
-        return f'{cls.excelColumn(col)}{cls.excelRow(row)}'
-
 def main() -> None:
     print("Loading Gangway Dictionary spreadsheet...")
     googleClient = authorize(client_secret = AUTH_TOKEN, scopes = SCOPES)
