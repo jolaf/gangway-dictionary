@@ -55,7 +55,7 @@ class Language:
         self.name = data[1][headerRow]
         assert len(self.name) >= 5
         self.byName = self.name[:-1].lower()
-        self.note = data[1][headerRow + 1]
+        self.note = data[0][headerRow + 1]
         self.translator = data[0][validateRow]
         assert self.translator
         self.contact = data[1][validateRow]
