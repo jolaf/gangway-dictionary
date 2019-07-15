@@ -50,19 +50,19 @@ class Language:
     def __init__(self, headerRow: int, validateRow: int, data: Table, originals: Sequence[Block]) -> None:
         assert originals
         assert len(data) == 2
-        self.isoCode = data[0][headerRow]
-        assert len(self.isoCode) == 2
-        assert self.isoCode.isupper()
-        self.name = data[1][headerRow].lower()
+        self.native = data[0][headerRow]
+        assert self.native
+        self.name = data[1][headerRow]
         assert len(self.name) >= 5
-        self.byName = self.name[:-1]
+        self.byName = self.name[:-1].lower()
+        self.note = data[1][headerRow + 1]
         self.translator = data[0][validateRow]
         assert self.translator
         self.contact = data[1][validateRow]
-        assert self.contact
-        print(self.isoCode, self.name, self.translator, self.contact)
-        self.docFileName = abspath(DOC_FILE_NAME % self.isoCode)
-        self.pdfFileName = abspath(PDF_FILE_NAME % self.isoCode)
+        assert self.contact, f"No contact for {self.name}"
+        print(self.native, self.name, self.translator, self.contact)
+        self.docFileName = abspath(DOC_FILE_NAME % self.name)
+        self.pdfFileName = abspath(PDF_FILE_NAME % self.name)
         self.data: Sequence[Tuple[str, Sequence[Tuple[str, str, str]]]] = tuple((block.title, tuple(zip(
                     (d.replace(LOCAL_PATTERN, self.byName) for d in block.data),
                     data[0][block.startRow : block.endRow + 1], data[1][block.startRow : block.endRow + 1]
