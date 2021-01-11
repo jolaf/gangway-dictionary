@@ -24,8 +24,8 @@ except ImportError as ex:
     comClient = None
     print(f"{type(ex).__name__}: {ex}\nWARNING: PDF generation will not be available.\nPlease run on Windows and install comtypes v1.1.7 or later: https://pypi.org/project/comtypes/\n")
 
-AUTH_TOKEN: str = 'client_id.json'
-SCOPES: Sequence[str] = ('https://www.googleapis.com/auth/spreadSheets.readonly',)
+AUTH_TOKEN: str = 'client_secret.json'
+SCOPES: Sequence[str] = ('https://www.googleapis.com/auth/spreadsheets.readonly',)
 SPREADSHEET_ID: str = '1kbMuGJaRR4gYTr9yaobskiENStj48m8wqhKRjlIQ0Tc'
 ORIGINAL_TITLE: str = 'Русский'
 LOCAL_PATTERN: str = '(местному)'
